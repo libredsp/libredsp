@@ -1,0 +1,23 @@
+[package]
+name = "libredsp"
+version = "0.1.0"
+edition = "2024"
+license = "Apache-2.0"
+description = "DSP library in Rust"
+repository = "https://github.com/libredsp/libredsp"
+readme = "README.md"
+keywords = ["dsp", "filter", "signal-processing"]
+
+[dependencies]
+num-complex = "0.4.6"
+wasm-bindgen = "0.2.126"
+nalgebra = "0.32"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[target.wasm32-unknown-unknown]
+rustflags = [
+  "-C",
+  "target-feature=-reference-types"
+]
