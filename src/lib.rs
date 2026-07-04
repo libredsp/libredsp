@@ -1,7 +1,7 @@
 use wasm_bindgen::prelude::*;
-mod signal;
-mod fft;
-mod utils;
+pub mod signal;
+pub mod fft;
+pub mod utils;
 pub mod types;
 pub mod filter_design;
 pub mod math;

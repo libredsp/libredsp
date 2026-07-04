@@ -1,10 +1,11 @@
-mod signal;
-mod fft;
-mod utils;
-use signal::Signal;
+pub mod signal;
+pub mod fft;
+pub mod utils;
 pub mod types;
 pub mod filter_design;
 pub mod math;
+
+use signal::Signal;
 use crate::filter_design::{
     iir_filter_analog_to_digital::*,
     iir_filter_zero_pole_placement::*,
@@ -18,7 +19,7 @@ fn main() {
     println!("coef {:?}", coefs);
 
     // Create a signal
-    let signal = Signal::new(vec![1.0, 0.0, 0.0]);
+    let signal = Signal::new(vec![1.0, 0.0, 0.0, 0.0]);
     println!("Signal: {:?}", signal.clone().to_vec());
     
     // Apply FFT
