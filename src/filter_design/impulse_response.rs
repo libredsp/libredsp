@@ -1,52 +1,52 @@
-/*
-    A system with pure delay has the DTFT of:
 
-        H(e^{j\omega}) = e^{-j\omega a}
+    // A system with pure delay has the DTFT of:
 
-    where $a$ can be any real number.
+    //     H(e^{j\omega}) = e^{-j\omega a}
 
-    The inverse DTFT of this function is:
+    // where $a$ can be any real number.
 
-        h[n] = \frac{\sin(\pi(n-a))}{\pi(n-a)}
+    // The inverse DTFT of this function is:
 
-    This gives us a linear phase filter, but it has infinite length.
-    Now, supponse we have an ideal low pass filter with linear phase:
+    //     h[n] = \frac{\sin(\pi(n-a))}{\pi(n-a)}
 
-        H{e^{-j\omega}} = { 
-                                e^{-j\omega a}   |\omega| < \omega_c
-                                0                \omega_c < |\omega| \leq \pi
-                        }
+    // This gives us a linear phase filter, but it has infinite length.
+    // Now, supponse we have an ideal low pass filter with linear phase:
 
-    The corresponding inpulse response is:
+    //     H{e^{-j\omega}} = { 
+    //                             e^{-j\omega a}   |\omega| < \omega_c
+    //                             0                \omega_c < |\omega| \leq \pi
+    //                     }
+
+    // The corresponding inpulse response is:
         
-        h[n] = \frac{\sin{\omega_c (n-a)}}{\pi(n-a)}
+    //     h[n] = \frac{\sin{\omega_c (n-a)}}{\pi(n-a)}
 
-    Note that this is also inifite length and non-causal.
+    // Note that this is also inifite length and non-causal.
 
-    Now, for causal and finite length FIR filters:
-    Two sufficient conditions that can give us causal
-    finite-length linear phase systems are:
+    // Now, for causal and finite length FIR filters:
+    // Two sufficient conditions that can give us causal
+    // finite-length linear phase systems are:
 
-        h[n] = h[M-n]
+    //     h[n] = h[M-n]
 
-    and
+    // and
 
-        h[n] = -h[M-n]
+    //     h[n] = -h[M-n]
 
-    for $0 \leq n \leq M$, and zero elsewhere.
+    // for $0 \leq n \leq M$, and zero elsewhere.
 
-    These are symmetric and antisymmetric filters.
+    // These are symmetric and antisymmetric filters.
 
-    Therefore, to get the first type for a low-pass filter,
-    we find the IDTFT of the ideal low-pass filter and
-    shift it by $M/2$ samples to make it causal.
+    // Therefore, to get the first type for a low-pass filter,
+    // we find the IDTFT of the ideal low-pass filter and
+    // shift it by $M/2$ samples to make it causal.
 
-    Depending on whether $M$ is even or odd, the peak of
-    the sinc function will either lie exactly on a sample
-    or between two samples. In both cases, the finite
-    sequence is symmetric, and applying a symmetric window
-    gives a linear phase FIR filter.
- */
+    // Depending on whether $M$ is even or odd, the peak of
+    // the sinc function will either lie exactly on a sample
+    // or between two samples. In both cases, the finite
+    // sequence is symmetric, and applying a symmetric window
+    // gives a linear phase FIR filter.
+ 
 
 use crate::signal::Signal;
 use crate::types::FilterType;
