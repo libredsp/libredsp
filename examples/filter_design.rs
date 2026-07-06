@@ -1,31 +1,15 @@
-pub mod signal;
-pub mod fft;
-pub mod utils;
-pub mod types;
-pub mod filter_design;
-pub mod math;
-pub mod spectral_estimation;
 
-use signal::Signal;
-use crate::filter_design::{
+use libredsp::filter_design::{
     iir_filter_analog_to_digital::*,
     iir_filter_zero_pole_placement::*,
     fir_filter_least_squares_linear_phase::*,
     fir_filter_windowing::*
 };
-use crate::types::*;
+use libredsp::types::*;
 
 fn main() {
-    let coefs = windowing_method(6, types::WindowType::Rectangular, types::FilterType::Lowpass{w: 0.5});
+    let coefs = windowing_method(6, WindowType::Rectangular, FilterType::Lowpass{w: 0.5});
     println!("coef {:?}", coefs);
-
-    // Create a signal
-    let signal = Signal::new(vec![1.0, 0.0, 0.0, 0.0]);
-    println!("Signal: {:?}", signal.clone().to_vec());
-    
-    // Apply FFT
-    let spectrum = signal.fft();
-    println!("Result of FFT: {:?}", spectrum);
 
     // Filter design examples
     let coefs_iir: TransferFunction = analog_to_digital_transform_iir_filter_design(

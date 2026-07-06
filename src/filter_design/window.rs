@@ -1,5 +1,22 @@
 use std::f64::consts::PI;
-use crate::signal::Signal;
+use crate::{signal::Signal, types::WindowType};
+
+pub fn get_window(window_type: WindowType, size: usize) -> Signal {
+    match window_type {
+        WindowType::Rectangular => {
+            Signal::new(vec![1.0; size])
+        }
+        WindowType::Hamming => {
+            hamming(size)
+        }
+        WindowType::Han => {
+            han(size)
+        }
+        WindowType::Bartlett => {
+            bartlett(size)
+        }
+    }
+}
 
 pub fn hamming(m: usize) -> Signal {
     let mut array = vec![0.0; m];

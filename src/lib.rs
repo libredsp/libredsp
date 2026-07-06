@@ -5,6 +5,9 @@ pub mod utils;
 pub mod types;
 pub mod filter_design;
 pub mod math;
+pub mod spectral_estimation;
+pub mod signal_generator;
+
 use crate::filter_design::{
     fir_filter_windowing,
     iir_filter_zero_pole_placement,
