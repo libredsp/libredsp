@@ -2,8 +2,8 @@
 
 A Digital Signal Processing (DSP) library written in Rust with WASM bindings for web applications.
 The library provides functionality for spectral estimation, FIR and IIR 
-filter design, hybrid simulation (such as the interconnection of discrete-time 
-elements with a continuous plant), FFT computation, and other DSP-related 
+filter design, hybrid simulation i.e., the interconnection of discrete-time 
+elements with continuous plants, FFT computation, and other DSP-related 
 operations.
 
 ## Installation
