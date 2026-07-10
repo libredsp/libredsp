@@ -5,8 +5,8 @@ pub mod types;
 pub mod filter_design;
 pub mod math;
 pub mod spectral_estimation;
-
 use signal::Signal;
+
 use crate::filter_design::{
     iir_filter_analog_to_digital::*,
     iir_filter_zero_pole_placement::*,

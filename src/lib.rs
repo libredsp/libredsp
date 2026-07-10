@@ -7,6 +7,7 @@ pub mod filter_design;
 pub mod math;
 pub mod spectral_estimation;
 pub mod signal_generator;
+pub mod simulation;
 
 use crate::filter_design::{
     fir_filter_windowing,
