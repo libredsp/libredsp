@@ -1,7 +1,10 @@
 # LibreDSP Library
 
 A Digital Signal Processing (DSP) library written in Rust with WASM bindings for web applications.
-The library provides functionality for spectral estimation, FIR and IIR filter design, signal generation, computing FFT, and other DSP-related operations.
+The library provides functionality for spectral estimation, FIR and IIR 
+filter design, hybrid simulation (such as the interconnection of discrete-time 
+elements with a continuous plant), FFT computation, and other DSP-related 
+operations.
 
 ## Installation
 
@@ -9,7 +12,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-libredsp = "0.1.3"
+libredsp = "0.1.4"
 ```
 
 or run:
