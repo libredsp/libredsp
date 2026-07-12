@@ -12,7 +12,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-libredsp = "0.1.4"
+libredsp = "0.1.5"
 ```
 
 or run:
