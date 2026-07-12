@@ -1,43 +1,44 @@
 use nalgebra::{DMatrix};
 
-pub fn tf_to_ss(num: &[f64], den: &[f64]) -> (DMatrix<f64>, DMatrix<f64>, DMatrix<f64>, f64) {
+pub fn tf_to_ss(
+    num: &[f64],
+    den: &[f64],
+) -> (DMatrix<f64>, DMatrix<f64>, DMatrix<f64>, f64) {
     if num.is_empty() || den.len() < 2 {
         panic!("Invalid transfer function.");
     }
-    
-    // Normalize if denominator's leading coefficient is not 1
+
     let (num, den) = if den[0] != 1.0 {
         normalize_tf(num, den)
     } else {
         (num.to_vec(), den.to_vec())
     };
-    
+
     let n = den.len() - 1;
-    
-    // Initialize A Matrix (N x N)
+
     let mut a = DMatrix::zeros(n, n);
-    
-    // Fill A Matrix based on denominator coefficients
-    for col in 0..n {
-        if col > 0 {
-            a[(col - 1, col)] = 1.0; // Subdiagonal (shift matrix)
-        }
-        a[(n - 1, col)] = -den[n - col]; // Last row
+    // Shift states
+    for i in 0..n - 1 {
+        a[(i, i + 1)] = 1.0;
     }
-    
-    // Initialize B Vector (N x 1)
+
+    // Last row
+    for i in 0..n {
+        a[(n - 1, i)] = -den[n - i];
+    }
+
+    // B
     let mut b = DMatrix::zeros(n, 1);
-    b[(n - 1, 0)] = num[0];
-    
-    // Initialize C Matrix (1 x N)
+    b[(n - 1, 0)] = 1.0;
+
+    // C
     let mut c = DMatrix::zeros(1, n);
     for i in 0..n {
-        c[(0, i)] = *num.get(i).unwrap_or(&0.0);
+        c[(0, i)] = *num.get(n - 1 - i).unwrap_or(&0.0);
     }
-    
-    // Initialize D Scalar
+
     let d = 0.0;
-    
+
     (a, b, c, d)
 }
 

@@ -5,25 +5,28 @@ pub struct DiscretePID {
     kp: f64,
     ki: f64,
     kd: f64,
-    ts: f64,
+    t_s: f64,
+
+    // Controller states
     integral: f64,
+    e_prev: f64,
+
     integral_max: f64,
     integral_min: f64,
-    e_prev: f64,
 }
 
 impl DiscretePID {
-    pub fn new(kp: f64, ki: f64, kd: f64, ts: f64, integral_max: f64, integral_min: f64) -> Self {
-        DiscretePID {
+    pub fn new(kp: f64, ki: f64, kd: f64, t_s: f64, integral_max: f64, integral_min: f64) -> Self {
+        Self {
             id: None,
             kp,
             ki,
             kd,
-            ts,
+            t_s,
             integral: 0.0,
+            e_prev: 0.0,
             integral_max,
             integral_min,
-            e_prev: 0.0,
         }
     }
 
@@ -42,39 +45,39 @@ impl DiscretePID {
         self.e_prev = 0.0;
     }
 
-    pub fn set_ts(&mut self, ts: f64) {
-        self.ts = ts;
+    pub fn set_t_s(&mut self, t_s: f64) {
+        self.t_s = t_s;
     }
 }
 
 impl Node for DiscretePID {
     fn execute(&mut self, input: &[Packet]) -> Option<Packet> {
+
         let e = input.first().map(|p| p.output).unwrap_or(0.0);
-        
-        self.integral += e * self.ts;
-        self.integral = self.clamp(self.integral);
-        
-        let derivative = (e - self.e_prev) / self.ts;
-        
-        let p_term = self.kp * e;
-        let i_term = self.ki * self.integral;
-        let d_term = self.kd * derivative;
-        
-        let output = p_term + i_term + d_term;
-        
-        self.e_prev = e;
-        
+        let integral = self.clamp(self.integral + e * self.t_s);
+        let derivative = (e - self.e_prev) / self.t_s;
+
+        let output = self.kp * e + self.ki * integral + self.kd * derivative;
+
         Some(Packet::new(output, self.get_id()))
     }
-    
+ 
+    fn update(&mut self, input: &[Packet]) {
+        let e = input.first()
+            .map(|p| p.output)
+            .unwrap_or(0.0);
+ 
+        self.integral = self.clamp(self.integral + e * self.t_s);
+        self.e_prev = e;
+    }
     fn get_display_name(&self) -> &str {
         "D-PID"
     }
-    
+
     fn get_id(&self) -> usize {
         self.id.expect("ID not set.")
     }
-    
+
     fn set_id(&mut self, id: usize) {
         self.id = Some(id);
     }

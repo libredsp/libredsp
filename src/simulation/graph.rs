@@ -1,5 +1,5 @@
-use crate::simulation::{ Node };
-use std::collections::{ HashSet, VecDeque };
+use crate::simulation::Node;
+use std::collections::{VecDeque};
 pub struct Graph {
     nodes: Vec<Box<dyn Node>>,
     adj_list: Vec<Vec<usize>>,
@@ -17,7 +17,7 @@ impl Graph {
     }
     pub fn get_node(&self, id: usize) -> &Box<dyn Node> {
         &self.nodes[id]
-    } 
+    }
     pub fn get_adj_list(&self) -> &Vec<Vec<usize>> {
         &self.adj_list
     }
@@ -50,35 +50,38 @@ impl Graph {
         Ok(())
     }
 
-    /*
-        This function returns topological order of a graph.
-        Topological order is a list containing the nodes which, for instance, if node 1 has a directed edge to node 2, node 1 appears 
+    /*  This function returns topological order of a graph.
+        Topological order is a list containing the nodes which, for instance, if node 1 has a directed edge to node 2, node 1 appears
         before node 2 in the order list.
         Having the topological order is a crucial step in the simulation as it find the order that each node can 'fire' without
-        depending on other nodes.  
-    */
-    pub fn get_topological_order(&self, skip_indices: &HashSet<usize>) -> Option<Vec<usize>> {
+        depending on other nodes.  */
+    pub fn get_topological_order(&self) -> Option<Vec<usize>> {
         let n = self.nodes.len();
         let mut in_degree = vec![0; n];
 
-        for (_from_index, neighbors) in self.adj_list.iter().enumerate() {
+        /* Increase in-degree only for nodes that their outputs don't depend on input. */
+        for neighbors in self.adj_list.iter() {
             for &to_idx in neighbors {
-                if !skip_indices.contains(&to_idx) {
+                if self.nodes[to_idx].output_depends_on_input() {
                     in_degree[to_idx] += 1;
                 }
             }
         }
 
         let mut queue: VecDeque<usize> = (0..n).filter(|&i| in_degree[i] == 0).collect();
-
         let mut order = Vec::with_capacity(n);
+
         while let Some(idx) = queue.pop_front() {
             order.push(idx);
+
             for &next_idx in &self.adj_list[idx] {
-                if skip_indices.contains(&next_idx) {
+                if !self.nodes[next_idx].output_depends_on_input() {
+                    /* In-degree for that node is already zero. Don't decrement. */
                     continue;
                 }
+
                 in_degree[next_idx] -= 1;
+
                 if in_degree[next_idx] == 0 {
                     queue.push_back(next_idx);
                 }

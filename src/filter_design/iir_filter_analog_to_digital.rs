@@ -112,7 +112,6 @@ fn build_tf(mut num: Vec<f64>, mut den: Vec<f64>) -> TransferFunction {
 }
 
 fn transform_analog_lowpass_to_highpass(poles: &[Complex<f64>], omega_c: f64) -> TransferFunction {
-    println!("{}", omega_c);
     let hp_poles: Vec<Complex<f64>> =
         poles.iter().map(|p| {
             let denom =
