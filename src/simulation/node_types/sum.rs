@@ -21,20 +21,20 @@ impl Node for Sum {
             } else {
                 -1.0
             };
-
             sum += sign * packet.output;
         }
+
         Some(Packet::new(sum, self.get_id()))
     }
-    
+
     fn get_display_name(&self) -> &str {
         "Sum"
     }
-    
+
     fn get_id(&self) -> usize {
         self.id.expect("ID not set.")
     }
-    
+
     fn set_id(&mut self, id: usize) {
         self.id = Some(id);
     }
