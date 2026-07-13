@@ -32,6 +32,7 @@ pub enum WindowType {
     Bartlett,
     Hamming,
     Han,
+    Kaiser { min_stopband_attinuation: f64, transition_width: f64},
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]

@@ -7,7 +7,7 @@ pub struct DiscretePID {
     kd: f64,
     t_s: f64,
 
-    // Controller states
+    /* Controller states */
     integral: f64,
     e_prev: f64,
 
