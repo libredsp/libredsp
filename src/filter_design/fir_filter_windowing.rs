@@ -64,6 +64,10 @@ pub fn windowing_method(n: usize, window_type: WindowType, filter_type: FilterTy
         WindowType::Han => {
              get_fir_tf((get_impulse_response(n, filter_type) * window::han(n)).to_vec())
         }
+        WindowType::Kaiser { min_stopband_attinuation, transition_width } => {
+            let window = window::kaiser(min_stopband_attinuation, transition_width);
+            get_fir_tf((get_impulse_response(window.len(), filter_type) * window).to_vec())
+        }
     }
 
 }
