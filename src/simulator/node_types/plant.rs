@@ -1,5 +1,5 @@
 use crate::math::tf_to_ss::tf_to_ss;
-use crate::simulation::{Node, Packet};
+use crate::simulator::{Node, Packet};
 use crate::types::TransferFunction;
 use nalgebra::{DMatrix, DVector};
 

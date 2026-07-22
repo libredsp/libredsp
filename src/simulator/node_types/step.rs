@@ -1,4 +1,4 @@
-use crate::simulation::{Node, Packet};
+use crate::simulator::{Node, Packet};
 
 pub struct Step {
     pub id: Option<usize>,

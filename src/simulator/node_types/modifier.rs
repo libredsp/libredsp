@@ -1,4 +1,4 @@
-use crate::simulation::{Node, Packet};
+use crate::simulator::{Node, Packet};
 use rand::random_range;
 
 pub struct Modifier {

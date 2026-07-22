@@ -1,4 +1,4 @@
-use crate::simulation::{Node, Packet};
+use crate::simulator::{Node, Packet};
 use std::fs::File;
 use std::io::Write;
 
@@ -55,4 +55,8 @@ impl Node for Display {
     fn set_id(&mut self, id: usize) {
         self.id = Some(id);
     }
+
+    fn get_recorded_output(&self) -> Option<&[f64]> {
+        Some(&self.y)
+    } 
 }

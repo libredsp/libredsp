@@ -1,4 +1,4 @@
-use crate::simulation::Node;
+use crate::simulator::Node;
 use std::collections::{VecDeque};
 pub struct Graph {
     nodes: Vec<Box<dyn Node>>,

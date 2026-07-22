@@ -1,5 +1,5 @@
 use crate::types::TransferFunction;
-use crate::simulation::{Node, Packet};
+use crate::simulator::{Node, Packet};
 
 /* Implementing the filtering operation:
 \[

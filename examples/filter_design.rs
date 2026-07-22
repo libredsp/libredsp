@@ -1,10 +1,5 @@
 
-use libredsp::filter_design::{
-    iir_filter_analog_to_digital::*,
-    iir_filter_zero_pole_placement::*,
-    fir_filter_least_squares_linear_phase::*,
-    fir_filter_windowing::*
-};
+use libredsp::filter_design::*;
 use libredsp::types::*;
 
 fn main() {

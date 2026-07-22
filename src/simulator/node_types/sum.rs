@@ -1,4 +1,4 @@
-use crate::simulation::{Node, Packet};
+use crate::simulator::{Node, Packet};
 use std::collections::HashMap;
 
 pub struct Sum {

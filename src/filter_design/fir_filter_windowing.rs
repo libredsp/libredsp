@@ -72,9 +72,9 @@ pub fn windowing_method(n: usize, window_type: WindowType, filter_type: FilterTy
 
 }
 
-fn get_fir_tf(a_ks: Vec<f64>) -> TransferFunction {
+fn get_fir_tf(num: Vec<f64>) -> TransferFunction {
     TransferFunction {
-        num: a_ks,
+        num: num,
         den: vec![1.0],
     }
 }

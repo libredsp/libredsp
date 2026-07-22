@@ -50,7 +50,7 @@ pub fn least_squares_linear_phase_fir(
     // Solve a = inv(C' W C) C' W D
     let ct_wc = c.transpose() * wc;
     let ct_wd = c.transpose() * wd;
-    // TODO use inverse
+    // Inverse
     let a = ct_wc.try_inverse().unwrap() * ct_wd;
     
     // Build impulse response

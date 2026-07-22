@@ -3,6 +3,8 @@ pub mod filter;
 pub mod convolve;
 pub mod tf_to_ss;
 pub mod bessel_function_zero_order;
+pub mod piecewiselinear_interpolation;
 
 pub use convolve::convolve;
 pub use bessel_function_zero_order::bessel_function_zero_order;
+pub use piecewiselinear_interpolation::PiecewiseLinearInterpolator;

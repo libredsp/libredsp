@@ -1,6 +1,8 @@
 .PHONY: build clean test run
-
 build:
+	cargo build
+
+build_web:
 	wasm-pack build --target web
 
 run:

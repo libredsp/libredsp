@@ -2,7 +2,7 @@
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
-#[derive(Debug, Clone)]
+#[derive(serde::Serialize, serde::Deserialize, Clone, Debug)]
 pub struct TransferFunction {
 
     #[wasm_bindgen(skip)]
@@ -49,3 +49,31 @@ pub enum AnalogToDigitalTransformationDesignMethod {
     Chebyshev,
 }
 
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum LinearPhaseFilterType { I, II, III, IV }
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum GeneratorType {
+    Sine {
+        n: usize,
+        amplitude: f64,
+        frequency: f64,
+        phase: f64,
+    },
+    PulseTrain {
+        n: usize,
+        amplitude: f64,
+        frequency: f64,
+        duty_cycle: f64,
+    },
+    WhiteNoise {
+        n: usize,
+        standard_deviation: f64,
+        mean: f64,
+    },
+    Delta {
+        n: usize,
+        position: usize,
+    },
+}

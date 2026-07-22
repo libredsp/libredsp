@@ -1,6 +1,6 @@
-use crate::simulation::Packet;
-
-pub trait Node {
+use crate::simulator::Packet;
+use std::any::Any;
+pub trait Node: Any {
     /* 
         Execute the node to produce this step's output. If
        has_direct_feedthrough() is false, this MUST NOT depend on `input`
@@ -33,5 +33,8 @@ pub trait Node {
     fn get_id(&self) -> usize;
     fn set_id(&mut self, id: usize);
     fn get_display_name(&self) -> &str;
+    fn get_recorded_output(&self) -> Option<&[f64]> {
+        None
+    }
 }
 
