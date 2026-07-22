@@ -143,7 +143,7 @@ fn main() {
                                 + get_white_noise_signal(n,2.0,0.0);
         let psd = signal.welch_estimate(libredsp::types::WindowType::Rectangular, 64, 5);
 
-        // We can see the non-zero peak at bin 5
+        /* We can see the non-zero peak at bin 5 */
         println!("{:?}", psd);
 }
 ```
