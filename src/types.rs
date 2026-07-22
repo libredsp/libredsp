@@ -49,3 +49,6 @@ pub enum AnalogToDigitalTransformationDesignMethod {
     Chebyshev,
 }
 
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum LinearPhaseFilterType { I, II, III, IV }

@@ -30,7 +30,7 @@ pub fn get_pulse_train_signal(n: usize, amplitude: f64, frequency: f64, duty_cyc
     Signal::new(res)
 }
 
-pub fn get_white_noise_singal(n: usize, standard_deviation: f64, mean: f64) -> Signal {
+pub fn get_white_noise_signal(n: usize, standard_deviation: f64, mean: f64) -> Signal {
     let mut res = Vec::with_capacity(n);
 
     for _ in 0..n {

@@ -5,3 +5,13 @@ pub mod iir_filter_zero_pole_placement;
 pub mod analog_filter_design;
 pub mod impulse_response;
 pub mod window;
+pub mod fir_parks_mcclellan;
+pub mod linear_phase_cosine_to_impulse_response;
+
+
+pub use fir_filter_windowing::windowing_method;
+pub use iir_filter_analog_to_digital::analog_to_digital_transform_iir_filter_design;
+pub use fir_filter_least_squares_linear_phase::least_squares_linear_phase_fir;
+pub use iir_filter_zero_pole_placement::zero_pole_placement_iir_filter_design;
+pub use fir_parks_mcclellan::parks_mcclellan_filter_design;
+pub use linear_phase_cosine_to_impulse_response::linear_phase_cosine_to_impulse_response;

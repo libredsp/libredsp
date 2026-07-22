@@ -1,6 +1,6 @@
 use std::f64::consts::PI;
 use crate::{signal::Signal, types::WindowType};
-use crate::math::{self, bessel_function_zero_order};
+use crate::math::{bessel_function_zero_order};
 
 pub fn get_window(window_type: WindowType, size: usize) -> Signal {
     match window_type {
