@@ -3,8 +3,26 @@
 A Digital Signal Processing (DSP) library written in Rust with WASM bindings for web applications.
 The library provides functionality for spectral estimation, FIR and IIR 
 filter design, hybrid simulation i.e., the interconnection of discrete-time 
-elements with continuous plants, FFT computation, and other DSP-related 
+elements with continuous plants, Fast Fourier transform (FFT), and other DSP-related 
 operations.
+
+## Features
+An overview of the features of the library is as follows:
+
+### Filter Design
+- **FIR filters**: Window-based design (Kaiser, Hamming, Hann, and more)
+- **Optimal FIR**: Least-squares and Parks-McClellan (Remez exchange) algorithms for linear-phase designs
+- **IIR filters**: Analog-to-digital transformations (bilinear transform) and pole-zero placement
+
+### Spectral Estimation
+Estimate the power spectral density (PSD) of your signal via:
+- *Periodogram*: Quick FFT-based power spectrum
+- *Welch's Method*: Smoother, lower-variance spectrum using overlapping windows
+
+### Hybrid Simulation
+Model and simulate systems where *discrete-time* elements interact with *analog plants*:
+- Discrete-time PID, filters, and signal modifier
+- Continuous-time plant models (via Laplace transfer function)
 
 ## Installation
 
@@ -21,7 +39,7 @@ For the web build (WASM bindings) run:
 wasm-pack build --target web
 ```
 
-## Usage
+## Examples
 To run a specific example:
 
 ```
@@ -29,28 +47,6 @@ cargo run --example <EXAMPLE>
 ```
 
 Where `<EXAMPLE>` for instance is `filter_design`. Visit the `examples/` directory to see all avaiable examples.
-
----
-## Features
-
-An overview of the features of the library is as follows:
-
-### Filter Design
-- **FIR filters**: Window-based design (Kaiser, Hamming, Hann, and more)
-- **Optimal FIR**: Least-squares and Parks–McClellan (Remez exchange) algorithms for linear-phase designs
-- **IIR filters**: Analog-to-digital transformations (bilinear transform, impulse invariance) and pole-zero placement
-
-### Spectral Estimation
-Understand the frequency content of your signals:
-- *Periodogram*: Quick FFT-based power spectrum
-- *Welch's Method*: Smoother, lower-variance spectrum using overlapping windows
-
-### Hybrid Simulation
-Model and simulate systems where *discrete-time* elements interact with *analog plants*:
-- Discrete-time PID, filters, and custom transfer functions
-- Continuous-time plant models (via ODE solvers or state-space)
-
----
 
 ## Usage
 

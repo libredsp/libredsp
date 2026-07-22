@@ -197,16 +197,8 @@ pub fn parks_mcclellan_filter_design(
         /*  ============================================================================================================
             ==============================================  Step II ====================================================
             ============================================================================================================
-            Here, we sweep the frequency grid and find the maximum errors between the desired frequency and what the
-            coefficients we found achieve.
-            A theorem says there would be  m+2 or m+3 extremas, where m is from: filtersize = 2*m + 1.
-            We then choose those frequenies and the new set of frequencies and solve Ax=b again.
-
-            The big question is that, when we solve Ax=b, when we solve this new system and find delta,
-            is the this new delta larger than the previous delta.
-            This pushes the lower bound of approximation higher,
-            which is exactly what we are looking after. But why is it the case?
-
+            Here, we sweep the frequency grid and find the maximum errors between the desired frequency and the filter
+            via the coefficients we found achieve...
         */
 
         for k in 0..=poly_degree {
