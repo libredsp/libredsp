@@ -17,9 +17,9 @@ use crate::types::*;
 use serde::Deserialize;
 use std::collections::HashMap;
 
-pub use crate::simulator::node_types::{DiscretePID, Display, Filter, Modifier, Plant, Step, Sum};
+pub use crate::simulator::node_types::{DiscretePID, Display, Filter, Modifier, Plant, Generator, Sum};
 pub use crate::simulator::{Graph, simulate};
-pub use crate::types::{*};
+pub use crate::types::*;
 
 fn match_window_type(n: u8) -> WindowType {
     match n {
@@ -250,8 +250,9 @@ pub fn parks_mcclellan_wasm(
 #[derive(Deserialize)]
 #[serde(tag = "type", content = "params")]
 enum NodeSpec {
-    Step {
-        value: f64,
+    Generator {
+        #[serde(flatten)]
+        generator_type: GeneratorType,
     },
     Sum {
         signs: HashMap<String, Sign>,
@@ -324,8 +325,9 @@ pub fn simulate_graph_wasm(json: &str) -> Result<JsValue, JsValue> {
 
     for entry in &spec.nodes {
         let node_id = match &entry.spec {
-            NodeSpec::Step { value } => graph.add_node(Step::new(*value)),
-
+            NodeSpec::Generator { generator_type } => {
+                graph.add_node(Generator::new(generator_type.clone()))
+            }
             NodeSpec::DiscretePID {
                 kp,
                 ki,
@@ -383,7 +385,7 @@ pub fn simulate_graph_wasm(json: &str) -> Result<JsValue, JsValue> {
             JsValue::from_str(&format!("edge error {} -> {}: {}", e.from, e.to, err))
         })?;
     }
-    
+
     /* Return the simulation result captured by the Display elements. */
     let recordings = simulate(&mut graph, spec.simulation.steps)
         .ok_or_else(|| JsValue::from_str("cycle detected in graph"))?;

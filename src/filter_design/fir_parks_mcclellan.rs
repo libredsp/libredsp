@@ -297,7 +297,6 @@ fn get_extrema_indices(error: &Vec<f64>) -> Vec<usize> {
     res
 }
 
-
 fn check_for_convergence(current_reference_set: &[usize], new_reference_set: &[usize]) -> bool {
     current_reference_set == new_reference_set
 }
