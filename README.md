@@ -10,9 +10,9 @@ The library has minimal dependencies and implements core DSP algorithms from scr
 An overview of the features of the library is as follows:
 
 ### Filter Design
-- **FIR filters**: Window-based design (Kaiser, Hamming, Hann, and more)
-- **Optimal FIR**: Least-squares and Parks-McClellan (Remez exchange) algorithms for linear-phase designs
-- **IIR filters**: Analog-to-digital transformations (bilinear transform) and pole-zero placement
+- *FIR filters*: Window-based design (Kaiser, Hamming, Hann, and more)
+- *Optimal FIR*: Least-squares and Parks-McClellan (Remez exchange) algorithms for linear-phase designs
+- *IIR filters*: Analog-to-digital transformations (bilinear transform) and pole-zero placement
 
 ### Spectral Estimation
 Estimate the power spectral density (PSD) of your signal via:
@@ -88,41 +88,52 @@ fn main() {
     let coefficients = parks_mcclellan(num_taps, desired_freq, weight, LinearPhaseFilterType::I);
 }
 ```
-- Simulating a system consisting of a discrete-PID controller connected to a continous plant via feedback:
-
+- Simulates a system where the output of a sine-wave generator is added to the output of a white-noise generator, and the resulting signal is fed into a low-pass filter (LPF).
 ```rust
-/* import statements ... */
+/* import statements */
 fn main() {
     let mut graph = Graph::new();
     let mut display = Display::new();
     display.set_output_file("output.csv");
 
-    /* Add nodes */
-    let step_id = graph.add_node(Step::new(2.0));
-    let display_id = graph.add_node(display);
-    let pid_id = graph.add_node(DiscretePID::new(1.0, 10.0, 0.01, 0.01, 1.0, -1.0));
-    let plant_id = graph.add_node(Plant::new(
-        TransferFunction { num: vec![2.0, 5.0], den: vec![1.0, 3.0, 2.0] },
-        0.01,
-        0.001
-    ));
-    
-    let modifier_id = graph.add_node(Modifier::new(0.0, 0.2));
+    /* Clean sine */
+    let sine_id = graph.add_node(Generator::new(GeneratorType::Sine {
+        n: 1000,
+        amplitude: 1.0,
+        frequency: 5.0,
+        phase: 0.0,
+    }));
 
-    /* Configuring the nodes */
+    /* White noise */
+    let noise_id = graph.add_node(Generator::new(GeneratorType::WhiteNoise {
+        n: 1000,
+        mean: 0.0,
+        standard_deviation: 0.1,
+    }));
+
+    /* Add sine + noise */
     let mut signs = HashMap::new();
-    signs.insert(step_id, true);       // Step: positive (+)
-    signs.insert(modifier_id, false);  // Feedback: negative (-)
+    signs.insert(sine_id, true);
+    signs.insert(noise_id, true);
     let sum_id = graph.add_node(Sum::new(signs));
 
-    
-    graph.add_edge(step_id, sum_id).unwrap();
-    graph.add_edge(sum_id, pid_id).unwrap();
-    graph.add_edge(pid_id, plant_id).unwrap();
-    graph.add_edge(plant_id, display_id).unwrap();
-    graph.add_edge(plant_id, modifier_id).unwrap();
-    graph.add_edge(modifier_id, sum_id).unwrap();
+    /* Low-pass FIR */
+    let filter_id = graph.add_node(Filter::new(TransferFunction {
+        num: vec![
+            0.0550, 0.0895, 0.1208, 0.1446, 0.1575, 0.1575, 0.1446, 0.1208, 0.0895, 0.0550,
+        ],
+        den: vec![1.0],
+    }));
 
+    let display_id = graph.add_node(display);
+
+    /* Connect graph */
+    graph.add_edge(sine_id, sum_id).unwrap();
+    graph.add_edge(noise_id, sum_id).unwrap();
+    graph.add_edge(sum_id, filter_id).unwrap();
+    graph.add_edge(filter_id, display_id).unwrap();
+
+    /* Run */
     simulate(&mut graph, 1000);
 }
 ```

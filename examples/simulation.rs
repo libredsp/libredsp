@@ -5,7 +5,8 @@ use libredsp::types::{GeneratorType, TransferFunction};
 use std::collections::HashMap;
 
 /*
-    Simulates a system where a discrete-time PID controls a plant with feedback.
+    Simulates a system where a sine generator's output gets added to a white noise
+    generator output and the result gets feeded into a LPF.
 */
 fn main() {
     let mut graph = Graph::new();
