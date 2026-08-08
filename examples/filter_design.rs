@@ -1,24 +1,25 @@
-
 use libredsp::filter_design::*;
 use libredsp::types::*;
 
 fn main() {
-    let coefs = windowing_method(6, WindowType::Rectangular, FilterType::Lowpass{w: 0.5});
+    let coefs = windowing_method(6, WindowType::Rectangular, FilterType::Lowpass { w: 0.5 });
     println!("coef {:?}", coefs);
 
     // Filter design examples
     let coefs_iir: TransferFunction = analog_to_digital_transform_iir_filter_design(
-        AnalogToDigitalTransformationDesignMethod::Butterworth, 
-        FilterType::Highpass { w: 0.5 }, 
+        AnalogToDigitalTransformationDesignMethod::Butterworth,
+        FilterType::Highpass { w: 0.5 },
         3,
-        0.2);
+        0.2,
+    );
     println!("coef {:?}", coefs_iir);
 
     let fir_ls_lp = least_squares_linear_phase_fir(
-        vec![0.0, 0.15, 0.85, 1.0], 
+        vec![0.0, 0.15, 0.85, 1.0],
         vec![1.0, 1.0, 0.0, 0.0],
         vec![1.0, 100.0],
-        11);
+        11,
+    );
     println!("coef {:?}", fir_ls_lp);
     println!("");
 
@@ -27,5 +28,4 @@ fn main() {
         &vec![(-0.469, -0.605), (-0.469, 0.605)],
     );
     println!("coef {:?}", iir_pole_placement);
-
 }

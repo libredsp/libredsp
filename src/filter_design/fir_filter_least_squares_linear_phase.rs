@@ -8,6 +8,7 @@ pub fn least_squares_linear_phase_fir(
     weights: Vec<f64>,
     n: usize,
 ) -> TransferFunction {
+    assert_eq!(n % 2, 1);
     let l = 4098;
     let m = (n - 1) / 2;
     let normalized_freqs: Vec<f64> = (0..=l).map(|i| i as f64 / l as f64).collect();
