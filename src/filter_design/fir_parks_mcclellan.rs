@@ -86,9 +86,10 @@ use nalgebra::DMatrix;
         in iteration 'i' of the algorithm. For a proof of this, see "Iske, Armin.
         Approximation theory and algorithms for data analysis."
 
-        For a general reference on this algorithm, see the original paper,
-        "Parks, T., and James McClellan. Chebyshev approximation for nonrecursive
-        digital filters with linear phase."
+        For a general reference on this algorithm, see the following paper:
+            Rabiner, Lawrence R., James H. McClellan, and Thomas W. Parks.
+            "FIR digital filter design techniques using weighted Chebyshev approximation."
+            Proceedings of the IEEE 63.4 (1975): 595-610.
 */
 
 pub fn parks_mcclellan_filter_design(
