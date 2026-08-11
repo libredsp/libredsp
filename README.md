@@ -1,5 +1,7 @@
 # LibreDSP Library
 
+![Rust](https://github.com/libredsp/libredsp/actions/workflows/rust.yml/badge.svg)
+
 A Digital Signal Processing (DSP) library written in Rust with WebAssembly (WASM) bindings for web applications.
 
 The library provides functionality for spectral estimation, FIR and IIR filter design, hybrid simulation (the interconnection of discrete-time components with continuous-time plants), Fast Fourier Transform (FFT), and other digital signal processing algorithms.
