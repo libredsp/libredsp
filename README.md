@@ -8,6 +8,8 @@ The library provides functionality for spectral estimation, FIR and IIR filter d
 
 The library has minimal dependencies and implements core DSP algorithms from scratch.
 
+You may also be interested in [LibreDSP Workspace](https://libredsp.github.io), a web app that uses this library for DSP design and simulation.
+
 ## Features
 An overview of the features of the library is as follows:
 
