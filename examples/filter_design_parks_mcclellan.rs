@@ -14,7 +14,7 @@ fn main() {
         if f <= 0.18 * PI { 1.0 } else { 10.0 }
     };
 
-    // Design the filter
+    /* Design the filter */
     let coefficients =
         parks_mcclellan_filter_design(num_taps, target, weight, LinearPhaseFilterType::I);
     println!("{:?}", coefficients);
