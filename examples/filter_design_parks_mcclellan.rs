@@ -1,5 +1,5 @@
-use libredsp::filter_design::fir_parks_mcclellan::parks_mcclellan_filter_design;
-use libredsp::filter_design::parks_mcclellan_filter_design_by_nodes;
+use libredsp::filter_design::frequency_selective::fir_parks_mcclellan::parks_mcclellan_filter_design;
+use libredsp::filter_design::frequency_selective::parks_mcclellan_filter_design_by_nodes;
 use libredsp::types::LinearPhaseFilterType;
 use std::f64::consts::PI;
 

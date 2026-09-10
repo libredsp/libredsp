@@ -8,7 +8,7 @@ pub mod spectral_estimation;
 pub mod types;
 pub mod utils;
 
-use crate::filter_design::{
+use crate::filter_design::frequency_selective::{
     fir_filter_least_squares_linear_phase, fir_filter_windowing, iir_filter_analog_to_digital,
     iir_filter_zero_pole_placement, parks_mcclellan_filter_design_by_nodes,
 };
@@ -17,7 +17,9 @@ use crate::types::*;
 use serde::Deserialize;
 use std::collections::HashMap;
 
-pub use crate::simulator::node_types::{DiscretePID, Display, Filter, Modifier, Plant, Generator, Sum};
+pub use crate::simulator::node_types::{
+    DiscretePID, Display, Filter, Generator, Modifier, Plant, Sum,
+};
 pub use crate::simulator::{Graph, simulate};
 pub use crate::types::*;
 

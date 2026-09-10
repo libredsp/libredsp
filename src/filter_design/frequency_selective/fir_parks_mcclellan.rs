@@ -1,4 +1,4 @@
-use crate::filter_design::linear_phase_cosine_to_impulse_response;
+use crate::filter_design::frequency_selective::linear_phase_cosine_to_impulse_response;
 use crate::math::piecewiselinear_interpolation::PiecewiseLinearInterpolator;
 use crate::types::LinearPhaseFilterType;
 use crate::types::TransferFunction;

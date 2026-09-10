@@ -1,4 +1,4 @@
-use libredsp::filter_design::*;
+use libredsp::filter_design::frequency_selective::*;
 use libredsp::types::*;
 
 fn main() {

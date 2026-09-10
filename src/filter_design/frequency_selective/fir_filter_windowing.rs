@@ -1,8 +1,8 @@
 use crate::types::*;
-/* 
+/*
     <FIRST READ THE COMMENT IN impulse_response.rs>
-    In the windowing method, we multiply, element-wise, the desired impulse response (highpass, lowpass, etc.) 
-    with a window function. Window functions can be of different types such as rectangular, Hann, Hamming, etc. 
+    In the windowing method, we multiply, element-wise, the desired impulse response (highpass, lowpass, etc.)
+    with a window function. Window functions can be of different types such as rectangular, Hann, Hamming, etc.
     However, a common property of all of them is that they are symmetric.
     As a consequence, when they multiply the desired impulse response, the result is either symmetric or antisymmetric.
     Hence, the resulting function can be thought of as FIR filter taps which gives us linear phase.
@@ -10,14 +10,14 @@ use crate::types::*;
     Now, let's see what happens in the frequency domain when we multiply a delayed symmetric impulse response with a window function.
     Assume the desired impulse response is symmetric and has length \(M+1\).
     Since it is symmetric about \(M/2\), its DTFT will be
-    
+
     \[D(e^{j\omega}) = A(e^{j\omega}) e^{-j\omega M/2}\]
 
     where \(A(e^{j\omega})\) is a real and even function (because of the symmetry),
     and \(e^{-j\omega M/2}\) denotes a delay of \(M/2\) samples in time.
 
     Assume the window function is rectangular. Since it is also symmetric, the DTFT of this function is
-    
+
     \[
     W(e^{j\omega}) = B(e^{j\omega}) e^{-j\omega M/2}
     \]
@@ -46,30 +46,33 @@ use crate::types::*;
 
     where \(C(e^{j\omega})\) is real and even, and \(e^{-j\omega M/2}\) denotes a delay of \(M/2\) samples in time.
 */
-use crate::filter_design::impulse_response::get_impulse_response;
+use crate::filter_design::frequency_selective::impulse_response::get_impulse_response;
 use crate::filter_design::window;
 
-pub fn windowing_method(n: usize, window_type: WindowType, filter_type: FilterType) -> TransferFunction
-{
+pub fn windowing_method(
+    n: usize,
+    window_type: WindowType,
+    filter_type: FilterType,
+) -> TransferFunction {
     match window_type {
-        WindowType::Rectangular => {
-            get_fir_tf(get_impulse_response(n, filter_type).to_vec())
-        }
+        WindowType::Rectangular => get_fir_tf(get_impulse_response(n, filter_type).to_vec()),
         WindowType::Bartlett => {
-             get_fir_tf((get_impulse_response(n, filter_type) * window::bartlett(n)).to_vec())
+            get_fir_tf((get_impulse_response(n, filter_type) * window::bartlett(n)).to_vec())
         }
         WindowType::Hamming => {
-             get_fir_tf((get_impulse_response(n, filter_type) * window::hamming(n)).to_vec())
+            get_fir_tf((get_impulse_response(n, filter_type) * window::hamming(n)).to_vec())
         }
         WindowType::Han => {
-             get_fir_tf((get_impulse_response(n, filter_type) * window::han(n)).to_vec())
+            get_fir_tf((get_impulse_response(n, filter_type) * window::han(n)).to_vec())
         }
-        WindowType::Kaiser { min_stopband_attinuation, transition_width } => {
+        WindowType::Kaiser {
+            min_stopband_attinuation,
+            transition_width,
+        } => {
             let window = window::kaiser(min_stopband_attinuation, transition_width);
             get_fir_tf((get_impulse_response(window.len(), filter_type) * window).to_vec())
         }
     }
-
 }
 
 fn get_fir_tf(num: Vec<f64>) -> TransferFunction {

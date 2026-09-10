@@ -1,16 +1,16 @@
 use crate::filter_design::window::*;
-use crate::types::*;
 use crate::signal::Signal;
+use crate::types::*;
 
 impl Signal {
     pub fn welch_estimate(
         &self,
         window_type: WindowType,
         segment_size: usize,
-        shift_size: usize
+        shift_size: usize,
     ) -> Vec<f64> {
         let number_of_segments = 1 + (self.data.len() - segment_size) / shift_size;
-        
+
         // For non-rectangular window, the window should be normalized
         let mut w = get_window(window_type, segment_size);
         let mut sum = 0.0;
@@ -34,8 +34,8 @@ impl Signal {
             seg = seg * &w;
             let spectrum = seg.fft();
             for m in 0..=segment_size / 2 {
-                res[m] += (spectrum[m].re * spectrum[m].re + spectrum[m].im * spectrum[m].im) 
-                            / segment_size as f64;
+                res[m] += (spectrum[m].re * spectrum[m].re + spectrum[m].im * spectrum[m].im)
+                    / segment_size as f64;
             }
         }
 

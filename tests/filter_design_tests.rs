@@ -1,4 +1,4 @@
-use libredsp::filter_design::windowing_method;
+use libredsp::filter_design::frequency_selective::windowing_method;
 use libredsp::types::{FilterType, WindowType};
 
 #[test]
