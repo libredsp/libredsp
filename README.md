@@ -4,7 +4,7 @@
 
 A Digital Signal Processing (DSP) library written in Rust with WebAssembly (WASM) bindings for web applications.
 
-The library provides functionality for spectral estimation, frequency-selective FIR and IIR filter design, statistical filter design (such as Wiener filter and LMS), hybrid simulation (the interconnection of discrete-time components with continuous-time plants), Fast Fourier Transform (FFT).
+The library provides functionality for spectral estimation, frequency-selective FIR and IIR filter design, statistical filter design (such as Wiener filter and LMS), hybrid simulation, i.e.,the interconnection of discrete-time components with continuous-time plants and Fast Fourier Transform (FFT).
 
 The library has minimal dependencies and implements core DSP algorithms from scratch.
 
