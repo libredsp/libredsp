@@ -1,6 +1,5 @@
-use crate::filter_design::window::*;
 use crate::signal::Signal;
-use crate::types::*;
+use crate::window::*;
 
 impl Signal {
     pub fn welch_estimate(

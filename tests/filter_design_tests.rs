@@ -1,5 +1,6 @@
 use libredsp::filter_design::frequency_selective::windowing_method;
-use libredsp::types::{FilterType, WindowType};
+use libredsp::types::FilterType;
+use libredsp::window::WindowType;
 
 #[test]
 fn windowing_method_has_expected_form() {

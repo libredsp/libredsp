@@ -1,6 +1,6 @@
 // src/types.rs
-use wasm_bindgen::prelude::*;
 use serde::Deserialize;
+use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
 #[derive(serde::Serialize, serde::Deserialize, Clone, Debug)]
@@ -23,18 +23,6 @@ impl TransferFunction {
     pub fn den(&self) -> Vec<f64> {
         self.den.clone()
     }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq)]
-pub enum WindowType {
-    Rectangular,
-    Bartlett,
-    Hamming,
-    Han,
-    Kaiser {
-        min_stopband_attinuation: f64,
-        transition_width: f64,
-    },
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -63,13 +51,31 @@ pub enum LinearPhaseFilterType {
 #[serde(tag = "type")]
 pub enum GeneratorType {
     #[serde(rename = "sine")]
-    Sine { n: usize, amplitude: f64, frequency: f64, phase: f64 },
+    Sine {
+        n: usize,
+        amplitude: f64,
+        frequency: f64,
+        phase: f64,
+    },
     #[serde(rename = "pulse")]
-    PulseTrain { n: usize, amplitude: f64, frequency: f64, duty_cycle: f64 },
+    PulseTrain {
+        n: usize,
+        amplitude: f64,
+        frequency: f64,
+        duty_cycle: f64,
+    },
     #[serde(rename = "noise")]
-    WhiteNoise { n: usize, standard_deviation: f64, mean: f64 },
+    WhiteNoise {
+        n: usize,
+        standard_deviation: f64,
+        mean: f64,
+    },
     #[serde(rename = "delta")]
     Delta { n: usize, position: usize },
     #[serde(rename = "step")]
-    Step { n: usize, amplitude: f64, step_index: usize },
+    Step {
+        n: usize,
+        amplitude: f64,
+        step_index: usize,
+    },
 }

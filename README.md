@@ -2,9 +2,9 @@
 
 ![Rust](https://github.com/LibreDSP/LibreDSP/actions/workflows/rust.yml/badge.svg)
 
-A Digital Signal Processing (DSP) library written in Rust with WebAssembly (WASM) bindings for web applications.
+A Digital Signal Processing (DSP) library written in Rust. The library also contains WebAssembly (WASM) bindings for web applications.
 
-The library provides functionality for spectral estimation, frequency-selective FIR and IIR filter design, statistical filter design (such as Wiener filter and LMS), hybrid simulation, i.e.,the interconnection of discrete-time components with continuous-time plants and Fast Fourier Transform (FFT).
+LibreDSP provides functionality for spectral estimation, frequency-selective FIR and IIR filter design, statistical filter design (such as Wiener filter and LMS), hybrid simulation, i.e.,the interconnection of discrete-time components with continuous-time plants and Fast Fourier Transform (FFT).
 
 The library has minimal dependencies and implements core DSP algorithms from scratch.
 
@@ -20,7 +20,7 @@ An overview of the features of the library is as follows:
 
 ### Statistical Filter Design
 - *Wiener filter*: Computes the filter coefficients that minimize the mean square error (MSE) between a desired signal and the filter output, in one computation.
-- *Least mean square (LMS)*: Iteratively estimates the same MSE-minimizing filter coefficients by using instantaneous samples instead of the true expected value.
+- *Least mean square (LMS)*: Iteratively estimates the same MSE-minimizing filter coefficients by using instantaneous samples instead of estimating expected values by averaging.
 
 ### Spectral Estimation
 Estimate the power spectral density (PSD) of your signal via:
@@ -33,14 +33,13 @@ Model and simulate systems where *discrete-time* elements interact with *analog 
 - Continuous-time plant models (via Laplace transfer function)
 
 ## Installation
-
 Simply clone the repo and build it with cargo. Alternatively, run:
 
 ```
 cargo install libredsp
 ```
 
-To add the latest version of this library available on crates.io to your project.
+to add the latest version of this library available on crates.io to your project.
 For the web build (WASM bindings) run:
 
 ```

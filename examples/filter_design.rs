@@ -1,5 +1,6 @@
 use libredsp::filter_design::frequency_selective::*;
 use libredsp::types::*;
+use libredsp::window::*;
 
 fn main() {
     let coefs = windowing_method(6, WindowType::Rectangular, FilterType::Lowpass { w: 0.5 });

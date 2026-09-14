@@ -14,20 +14,21 @@ impl Signal {
         self.data.len()
     }
 
-    pub fn to_vec(self) -> Vec<f64> {
-        self.data
+    pub fn to_vec(&self) -> Vec<f64> {
+        self.data.clone()
     }
 
     pub fn zero_pad(&mut self, n: usize) {
-        for _ in 0..n {
-            self.data.push(0.0);
-        }
+        self.data.extend(std::iter::repeat_n(0.0, n));
     }
+
     pub fn zero_pad_to_the_next_power_of_two(&mut self) {
-        let the_next_power_of_two = self.len().next_power_of_two();
-        for _ in self.len()..the_next_power_of_two {
-            self.data.push(0.0);
-        }
+        let next_power_of_two = self.len().next_power_of_two();
+        self.zero_pad(next_power_of_two - self.len());
+    }
+
+    pub fn iter(&self) -> impl Iterator<Item = f64> + '_ {
+        self.data.iter().copied()
     }
 
     pub fn slice(&self, start: usize, end: usize) -> Signal {
@@ -45,7 +46,6 @@ impl Signal {
 
             for k in 0..n {
                 let x = if k >= lag { self[k - lag] } else { 0.0 };
-
                 sum += x * other[k];
             }
 
@@ -60,11 +60,56 @@ impl Signal {
     }
 }
 
+impl FromIterator<f64> for Signal {
+    fn from_iter<I: IntoIterator<Item = f64>>(iter: I) -> Self {
+        Signal::new(iter.into_iter().collect())
+    }
+}
+
+// Element-wise addition
+impl<'a, 'b> Add<&'b Signal> for &'a Signal {
+    type Output = Signal;
+
+    fn add(self, other: &'b Signal) -> Signal {
+        assert_eq!(self.len(), other.len());
+
+        let result = self
+            .data
+            .iter()
+            .zip(&other.data)
+            .map(|(&x, &y)| x + y)
+            .collect();
+
+        Signal::new(result)
+    }
+}
+
 // Element-wise addition
 impl Add<Signal> for Signal {
     type Output = Signal;
 
     fn add(self, other: Signal) -> Signal {
+        let n = self.data.len().max(other.data.len());
+        let mut result = Vec::with_capacity(n);
+
+        for i in 0..self.data.len().min(other.data.len()) {
+            result.push(self.data[i] + other.data[i]);
+        }
+
+        if self.data.len() > other.data.len() {
+            result.extend_from_slice(&self.data[other.data.len()..]);
+        } else {
+            result.extend_from_slice(&other.data[self.data.len()..]);
+        }
+
+        Signal::new(result)
+    }
+}
+
+impl<'a> Add<&'a Signal> for Signal {
+    type Output = Signal;
+
+    fn add(self, other: &'a Signal) -> Signal {
         let n = self.data.len().max(other.data.len());
         let mut result = Vec::with_capacity(n);
 
@@ -104,10 +149,10 @@ impl Mul<Signal> for Signal {
     }
 }
 
-impl Mul<&Signal> for Signal {
+impl<'a> Mul<&'a Signal> for Signal {
     type Output = Signal;
 
-    fn mul(self, other: &Signal) -> Signal {
+    fn mul(self, other: &'a Signal) -> Signal {
         let n = self.data.len().max(other.data.len());
         let mut result = Vec::with_capacity(n);
 
@@ -131,11 +176,11 @@ impl Mul<f64> for Signal {
 
     fn mul(self, scalar: f64) -> Signal {
         let result: Vec<f64> = self.data.iter().map(|&x| x * scalar).collect();
+
         Signal::new(result)
     }
 }
-
-// Index and IndexMut impl. to access and modify Signal's elements
+// Index and IndexMut
 impl Index<usize> for Signal {
     type Output = f64;
 

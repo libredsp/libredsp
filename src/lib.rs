@@ -2,11 +2,18 @@ use wasm_bindgen::prelude::*;
 pub mod fft;
 pub mod filter_design;
 pub mod math;
+pub mod noise_reduction;
 pub mod signal;
 pub mod simulator;
 pub mod spectral_estimation;
 pub mod types;
 pub mod utils;
+pub mod window;
+
+pub use crate::noise_reduction::spectral_subtraction;
+
+pub use crate::window::WindowType;
+pub use crate::window::get_window;
 
 use crate::filter_design::frequency_selective::{
     fir_filter_least_squares_linear_phase, fir_filter_windowing, iir_filter_analog_to_digital,

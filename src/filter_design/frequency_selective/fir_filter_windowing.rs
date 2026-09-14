@@ -1,3 +1,5 @@
+use crate::window::*;
+
 use crate::types::*;
 /*
     <FIRST READ THE COMMENT IN impulse_response.rs>
@@ -47,7 +49,6 @@ use crate::types::*;
     where \(C(e^{j\omega})\) is real and even, and \(e^{-j\omega M/2}\) denotes a delay of \(M/2\) samples in time.
 */
 use crate::filter_design::frequency_selective::impulse_response::get_impulse_response;
-use crate::filter_design::window;
 
 pub fn windowing_method(
     n: usize,
