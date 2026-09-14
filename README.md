@@ -1,6 +1,6 @@
 # LibreDSP Library
 
-![Rust](https://github.com/libredsp/libredsp/actions/workflows/rust.yml/badge.svg)
+![Rust](https://github.com/LibreDSP/LibreDSP/actions/workflows/rust.yml/badge.svg)
 
 A Digital Signal Processing (DSP) library written in Rust with WebAssembly (WASM) bindings for web applications.
 
