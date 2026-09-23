@@ -1,5 +1,7 @@
 use std::ops::{Add, Index, IndexMut, Mul};
 
+use crate::TransferFunction;
+
 #[derive(Debug, Clone)]
 pub struct Signal {
     pub(crate) data: Vec<f64>,
@@ -57,6 +59,14 @@ impl Signal {
 
     pub fn autocorrelation(&self, max_lag: usize) -> Vec<f64> {
         self.crosscorrelation(self, max_lag)
+    }
+
+    pub fn filter(&self, filter_coef: &TransferFunction) -> Signal {
+        Signal::new(crate::math::filter::filter(
+            &self.to_vec(),
+            &filter_coef.num(),
+            &filter_coef.den(),
+        ))
     }
 }
 

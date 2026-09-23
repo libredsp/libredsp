@@ -14,6 +14,11 @@ pub struct TransferFunction {
 
 #[wasm_bindgen]
 impl TransferFunction {
+    #[wasm_bindgen(constructor)]
+    pub fn new(num: Vec<f64>, den: Vec<f64>) -> TransferFunction {
+        TransferFunction { num, den }
+    }
+
     #[wasm_bindgen(getter)]
     pub fn num(&self) -> Vec<f64> {
         self.num.clone()
