@@ -3,6 +3,7 @@ pub mod fft;
 pub mod filter_design;
 pub mod math;
 pub mod noise_reduction;
+pub mod resample;
 pub mod signal;
 pub mod simulator;
 pub mod spectral_estimation;

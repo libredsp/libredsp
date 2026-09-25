@@ -4,7 +4,7 @@
 
 A Digital Signal Processing (DSP) library written in Rust. The library also contains WebAssembly (WASM) bindings for web applications.
 
-LibreDSP provides functionality for spectral estimation, frequency-selective FIR and IIR filter design, statistical filter design (such as Wiener filter and LMS), hybrid simulation, i.e.,the interconnection of discrete-time components with continuous-time plants and Fast Fourier Transform (FFT).
+LibreDSP provides functionality for Fast Fourier Transform (FFT), spectral estimation, frequency-selective FIR and IIR filter design, statistical filter design (such as Wiener filter and LMS), resampling (including decimation and interpolation), and lastly, hybrid simulation i.e.,the interconnection of discrete-time components with continuous-time plants and .
 
 The library has minimal dependencies and implements core DSP algorithms from scratch.
 

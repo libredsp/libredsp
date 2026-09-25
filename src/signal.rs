@@ -12,6 +12,10 @@ impl Signal {
         Signal { data }
     }
 
+    pub fn zeros(size: usize) -> Self {
+        Signal::new(vec![0.0; size])
+    }
+
     pub fn len(&self) -> usize {
         self.data.len()
     }
