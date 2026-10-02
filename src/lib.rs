@@ -31,6 +31,8 @@ pub use crate::simulator::node_types::{
 pub use crate::simulator::{Graph, simulate};
 pub use crate::types::*;
 
+pub mod speech;
+
 fn match_window_type(n: u8) -> WindowType {
     match n {
         0 => WindowType::Rectangular,

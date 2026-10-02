@@ -30,5 +30,5 @@ pub fn wiener(x: &Signal, d: &Signal, filter_order: usize) -> Signal {
         .solve(&p)
         .expect("Wiener equation could not be solved");
 
-    Signal::new(w.iter().copied().collect())
+    Signal::new(w.as_slice())
 }
