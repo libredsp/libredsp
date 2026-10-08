@@ -4,7 +4,7 @@
 
 A Digital Signal Processing (DSP) library written in Rust. The library also contains WebAssembly (WASM) bindings for web applications.
 
-LibreDSP provides functionality for Fast Fourier Transform (FFT), spectral estimation, frequency-selective FIR and IIR filter design, statistical filter design (such as Wiener filter and LMS), resampling (including decimation and interpolation), and lastly, hybrid simulation i.e.,the interconnection of discrete-time components with continuous-time plants.
+LibreDSP provides functionality for Fast Fourier Transform (FFT), spectral estimation, frequency-selective FIR and IIR filter design, statistical filter design (such as Wiener filter and LMS), resampling (via decimation and interpolation), and speech processing algorithms such as background noise-removal via FFT and Voice Activity Detection (VAD).
 
 The library has minimal dependencies and implements core DSP algorithms from scratch.
 
@@ -27,10 +27,18 @@ Estimate the power spectral density (PSD) of your signal via:
 - *Periodogram*: Quick FFT-based power spectrum
 - *Welch's Method*: Smoother, lower-variance spectrum using overlapping windows
 
-### Hybrid Simulation
-Model and simulate systems where *discrete-time* elements interact with *analog plants*:
-- Discrete-time PID, filters, and signal modifier
-- Continuous-time plant models (via Laplace transfer function)
+### Speech Processing
+#### Background Noise Removal
+Performing background noise removal for audio recordings via Short-Time Fourier Transform (STFT).
+This is done by the library by breaking down an audio recording into overlapping frames, applying a Hann window to each frame, and taking the FFT.
+Afterwards, the estimated noise magnitude spectrum, obtained from the noise-only part of the audio, is subtracted from the magnitude spectrum of each frame.
+The result is then converted back to the time domain using the inverse FFT.
+Finally, the frames are combined using the overlap-and-add method.
+
+#### Voice Activity Detection (VAD)
+The library performs simple voice activity detection (VAD) based on logistic regression.
+This feature can detect speech and non-speech parts of an audio recording.
+Here, a non-speech part can be any type of sound, such as a car passing by or a honking sound, and is not necessarily silence.
 
 ## Installation
 Simply clone the repo and build it with cargo. Alternatively, run:
