@@ -1,213 +1,172 @@
+use std::error::Error;
+use std::fs;
+
+//////////////////////////////////////////////////////////////////////////////////
+///////////////////////// Defining a set of data structures //////////////////////
 #[derive(Debug, Clone, Copy)]
 pub struct Metrics {
+    /* The ratio of all predictions that were correct.
+    * Mathematically:
+    * accuracy = (#true positive + #true negative) /
+                 (#true positive + #true negative + #false positive + #false negative)
+    */
     pub accuracy: f64,
+    /* Of all frames that it called speech, the number of them that were actually speech.
+     * Mathematically:
+     * precision = (#true positive) / (#true positive + #false positive)
+     */
     pub precision: f64,
+    /* Of all the frames that were actually speech, the number of them that it detected.
+     * Mathematically:
+     * recall = (#true positive) / (#true positive + #false negative)
+     *
+     * Essentially, accuracy considers the ratio of non-speech and speech frames
+     * and whether they were correctly or incorrectly detected, while precision
+     * and recall focus only on the speech detections.
+     */
     pub recall: f64,
+    /* f1 combaines information from both precision and recall.
+    * Mathematically:
+    * f1 = 2(precision * recall) / (precision + recall)
+    * The higher this value the better. If f1=1.0, it means we have the perfect precision and recall.
+
+    */
     pub f1: f64,
 }
 
 pub struct TrainConfig {
     pub learning_rate: f64,
+    /* An 'epoch' is one complete pass through the training dataset when we train the model.
+     * The follwoing variable defines the number of epochs, a.k.a. passes we do through the
+     * training dataset.
+     */
     pub epochs: usize,
 }
 
 impl Default for TrainConfig {
     fn default() -> Self {
         TrainConfig {
-            learning_rate: 0.5,
-            epochs: 800,
+            learning_rate: 0.01,
+            epochs: 5000,
         }
     }
 }
 
-/// Numerically stable sigmoid.
-pub fn sigmoid(z: f64) -> f64 {
-    if z >= 0.0 {
-        1.0 / (1.0 + (-z).exp())
-    } else {
-        let e = z.exp();
-        e / (1.0 + e)
-    }
+//////////////////////////////////////////////////////////////////////////////////
+////////////////  The impl. of logistic regression starts here  //////////////////
+
+// The 'sigmoid' function: f(x) = 1 / (1 + e^-x)
+pub fn sigmoid(x: f64) -> f64 {
+    1.0 / (1.0 + (-x).exp())
 }
 
-/// Binary logistic regression. Positive class (true) is speech.
+/*  The logistic regression data structure containing the `weights`.
+* When you have input data `x` as:
+*     x = [x_1, x_2, x_3, ..., x_n]
+* the logistic regression then computes:
+*     z = w_0 + w_1x_1 + w_2x_2 + ... + w_nx_n
+* and then feeds `z` to the sigmoid function to receive a value between 0 and 1.
+*/
 #[derive(Debug, Clone, PartialEq)]
 pub struct LogisticRegression {
     pub weights: Vec<f64>,
-    pub bias: f64,
-    /// Per feature mean and standard deviation from the training data.
-    pub mean: Vec<f64>,
-    pub std: Vec<f64>,
 }
 
 impl LogisticRegression {
-    /// Probability that a frame is speech.
-    pub fn predict_proba(&self, features: &[f64]) -> f64 {
-        assert_eq!(features.len(), self.weights.len(), "wrong feature count");
+    /* For a given set of `weights`, it computes the probability of a given input data to occur. */
+    pub fn predict_probability(&self, x: &[f64]) -> f64 {
+        assert_eq!(x.len() + 1, self.weights.len(), "wrong feature count");
 
-        let mut logit = self.bias;
-        for j in 0..self.weights.len() {
-            let standardized = (features[j] - self.mean[j]) / self.std[j];
-            logit += self.weights[j] * standardized;
+        let mut z = self.weights[0];
+        for j in 0..x.len() {
+            z += self.weights[j + 1] * x[j];
         }
-
-        sigmoid(logit)
+        sigmoid(z)
     }
 
-    pub fn predict_proba_all(&self, features: &[Vec<f64>]) -> Vec<f64> {
-        features.iter().map(|f| self.predict_proba(f)).collect()
+    pub fn predict_probabilities(&self, x: &[Vec<f64>]) -> Vec<f64> {
+        x.iter().map(|row| self.predict_probability(row)).collect()
     }
-    ///
-    /// Train on feature vectors `x` with labels `y` (true = speech).
-    pub fn fit(x: &[Vec<f64>], y: &[bool], config: &TrainConfig) -> Result<Self, String> {
+
+    /* Performing the update equation on weights, `weight.epochs` times:
+     * weights <- weights + alpha * \sum_{i=0}^{n-1} (y_i - h(x_i)) * x_i
+     */
+    pub fn train(x: &[Vec<f64>], y: &[bool], config: &TrainConfig) -> Result<Self, String> {
         if x.is_empty() || x.len() != y.len() {
             return Err("x and y must be non-empty and the same length".into());
         }
         let n = x.len();
         let dim = x[0].len();
 
-        let n_pos = y.iter().filter(|&&l| l).count();
-        let n_neg = n - n_pos;
-        if n_pos == 0 || n_neg == 0 {
-            return Err("need both speech and non-speech frames".into());
-        }
-
-        // Mean and standard deviation of each feature
-        let mut mean = vec![0.0; dim];
-        for row in x {
-            for j in 0..dim {
-                mean[j] += row[j] / n as f64;
-            }
-        }
-        let mut std = vec![0.0; dim];
-        for row in x {
-            for j in 0..dim {
-                std[j] += (row[j] - mean[j]).powi(2) / n as f64;
-            }
-        }
-        for s in &mut std {
-            *s = s.sqrt();
-            if *s < 1e-12 {
-                *s = 1.0; // constant feature, avoid dividing by zero
-            }
-        }
-
-        // Standardized copy of the data
-        let z: Vec<Vec<f64>> = x
-            .iter()
-            .map(|row| (0..dim).map(|j| (row[j] - mean[j]) / std[j]).collect())
-            .collect();
-
-        // Weight each class so both count equally, even if one is rarer
-        let w_pos = n as f64 / (2.0 * n_pos as f64);
-        let w_neg = n as f64 / (2.0 * n_neg as f64);
-
-        let mut weights = vec![0.0; dim];
-        let mut bias = 0.0;
+        let mut model = LogisticRegression {
+            weights: vec![0.0; dim + 1],
+        };
 
         for _ in 0..config.epochs {
-            let mut grad_w = vec![0.0; dim];
-            let mut grad_b = 0.0;
+            let mut grad = vec![0.0; dim + 1];
 
             for i in 0..n {
-                let logit = bias + (0..dim).map(|j| weights[j] * z[i][j]).sum::<f64>();
-                let p = sigmoid(logit);
-                let target = if y[i] { 1.0 } else { 0.0 };
-                let class_weight = if y[i] { w_pos } else { w_neg };
-                let err = class_weight * (p - target);
+                let err = if y[i] { 1.0 } else { 0.0 } - model.predict_probability(&x[i]);
 
+                grad[0] += err; // x0 = 1
                 for j in 0..dim {
-                    grad_w[j] += err * z[i][j];
+                    grad[j + 1] += err * x[i][j];
                 }
-                grad_b += err;
             }
 
-            // The class weights sum to n, so dividing by n gives the average
-            for j in 0..dim {
-                weights[j] -= config.learning_rate * grad_w[j] / n as f64;
+            for j in 0..=dim {
+                model.weights[j] += config.learning_rate * grad[j] / n as f64;
             }
-            bias -= config.learning_rate * grad_b / n as f64;
         }
 
-        Ok(LogisticRegression {
-            weights,
-            bias,
-            mean,
-            std,
-        })
+        Ok(model)
     }
-    ///
-    /// Score the model on labeled frames. A frame counts as speech when
-    /// its probability is at or above `threshold`.
+
+    // Calculate the accuracy, precision, recall and f1
     pub fn evaluate(&self, x: &[Vec<f64>], y: &[bool], threshold: f64) -> Metrics {
-        let (mut tp, mut fp, mut tn, mut fn_) = (0.0_f64, 0.0_f64, 0.0_f64, 0.0_f64);
+        let (mut true_positive, mut false_positive, mut true_negative, mut false_negative) =
+            (0.0_f64, 0.0_f64, 0.0_f64, 0.0_f64);
 
         for (row, &label) in x.iter().zip(y) {
-            let predicted = self.predict_proba(row) >= threshold;
-            match (predicted, label) {
-                (true, true) => tp += 1.0,
-                (true, false) => fp += 1.0,
-                (false, false) => tn += 1.0,
-                (false, true) => fn_ += 1.0,
+            match (self.predict_probability(row) >= threshold, label) {
+                (true, true) => true_positive += 1.0,
+                (true, false) => false_positive += 1.0,
+                (false, false) => true_negative += 1.0,
+                (false, true) => false_negative += 1.0,
             }
         }
 
-        let precision = if tp + fp > 0.0 { tp / (tp + fp) } else { 0.0 };
-        let recall = if tp + fn_ > 0.0 { tp / (tp + fn_) } else { 0.0 };
-        let f1 = if precision + recall > 0.0 {
-            2.0 * precision * recall / (precision + recall)
-        } else {
-            0.0
-        };
+        let ratio = |a: f64, b: f64| if b > 0.0 { a / b } else { 0.0 };
+        let precision = ratio(true_positive, true_positive + false_positive);
+        let recall = ratio(true_positive, true_positive + false_negative);
+
         Metrics {
-            accuracy: (tp + tn) / (tp + fp + tn + fn_).max(1.0),
+            accuracy: ratio(
+                true_positive + true_negative,
+                true_positive + false_positive + true_negative + false_negative,
+            ),
             precision,
             recall,
-            f1,
+            f1: ratio(2.0 * precision * recall, precision + recall),
         }
     }
-}
 
-use std::error::Error;
-use std::fs;
-
-impl LogisticRegression {
-    /// Save as 4 lines of text: bias, weights, mean, std.
+    // Convert weights to a one line of text
     pub fn save(&self, path: &str) -> Result<(), Box<dyn Error>> {
-        let join = |v: &[f64]| {
-            v.iter()
-                .map(|x| x.to_string())
-                .collect::<Vec<_>>()
-                .join(" ")
-        };
-
-        let text = format!(
-            "{}\n{}\n{}\n{}\n",
-            self.bias,
-            join(&self.weights),
-            join(&self.mean),
-            join(&self.std)
-        );
-        fs::write(path, text)?;
+        let line: Vec<String> = self.weights.iter().map(|t| t.to_string()).collect();
+        fs::write(path, line.join(" ") + "\n")?;
         Ok(())
     }
-
+    // Convert weights from a textual format to an actual weights (with vector type)
     pub fn load(path: &str) -> Result<Self, Box<dyn Error>> {
         let text = fs::read_to_string(path)?;
-        let lines: Vec<&str> = text.lines().collect();
-        if lines.len() < 4 {
-            return Err("model file is incomplete".into());
+        let weights: Vec<f64> = text
+            .split_whitespace()
+            .map(|v| v.parse())
+            .collect::<Result<_, _>>()?;
+        if weights.is_empty() {
+            return Err("model file is empty".into());
         }
-
-        let parse = |line: &str| -> Result<Vec<f64>, std::num::ParseFloatError> {
-            line.split_whitespace().map(|v| v.parse()).collect()
-        };
-
-        Ok(LogisticRegression {
-            bias: lines[0].trim().parse()?,
-            weights: parse(lines[1])?,
-            mean: parse(lines[2])?,
-            std: parse(lines[3])?,
-        })
+        Ok(LogisticRegression { weights })
     }
 }

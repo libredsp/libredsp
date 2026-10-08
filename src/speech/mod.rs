@@ -16,4 +16,8 @@ pub mod vad;
 pub use vad::{Segment, VadConfig, detect_speech, segments_from_probabilities};
 
 pub mod dataset;
+
 pub mod wav;
+pub use wav::{read_wav, read_wav_mono, write_wav, write_wav_mono};
+
+pub mod stft_background_noise_removal;

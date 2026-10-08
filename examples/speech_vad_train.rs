@@ -59,7 +59,7 @@ fn main() {
         val_x.len()
     );
 
-    let model = LogisticRegression::fit(&train_x, &train_y, &TrainConfig::default()).unwrap();
+    let model = LogisticRegression::train(&train_x, &train_y, &TrainConfig::default()).unwrap();
 
     println!("train: {:?}", model.evaluate(&train_x, &train_y, 0.5));
     println!("held out: {:?}", model.evaluate(&val_x, &val_y, 0.5));
