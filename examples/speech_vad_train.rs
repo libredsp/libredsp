@@ -1,5 +1,5 @@
+use libredsp::ml::{LogisticRegression, TrainConfig};
 use libredsp::speech::dataset::load_labeled_frames;
-use libredsp::speech::{LogisticRegression, TrainConfig};
 use std::fs;
 use std::path::{Path, PathBuf};
 

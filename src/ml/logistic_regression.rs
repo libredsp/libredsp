@@ -3,6 +3,24 @@ use std::fs;
 
 //////////////////////////////////////////////////////////////////////////////////
 ///////////////////////// Defining a set of data structures //////////////////////
+pub struct TrainConfig {
+    pub learning_rate: f64,
+    /* An 'epoch' is one complete pass through the training dataset when we train the model.
+     * The follwoing variable defines the number of epochs, a.k.a. passes we do through the
+     * training dataset.
+     */
+    pub epochs: usize,
+}
+
+impl Default for TrainConfig {
+    fn default() -> Self {
+        TrainConfig {
+            learning_rate: 0.01,
+            epochs: 5000,
+        }
+    }
+}
+
 #[derive(Debug, Clone, Copy)]
 pub struct Metrics {
     /* The ratio of all predictions that were correct.
@@ -32,24 +50,6 @@ pub struct Metrics {
 
     */
     pub f1: f64,
-}
-
-pub struct TrainConfig {
-    pub learning_rate: f64,
-    /* An 'epoch' is one complete pass through the training dataset when we train the model.
-     * The follwoing variable defines the number of epochs, a.k.a. passes we do through the
-     * training dataset.
-     */
-    pub epochs: usize,
-}
-
-impl Default for TrainConfig {
-    fn default() -> Self {
-        TrainConfig {
-            learning_rate: 0.01,
-            epochs: 5000,
-        }
-    }
 }
 
 //////////////////////////////////////////////////////////////////////////////////

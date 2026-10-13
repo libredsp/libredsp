@@ -1,8 +1,8 @@
 use crate::signal::Signal;
 
+use crate::ml::logistic_regression::LogisticRegression;
 use crate::speech::features::extract_features;
 use crate::speech::frame_params;
-use crate::speech::logistic_regression::LogisticRegression;
 
 //////////////////////////////////////////////////////////////////////////////////
 ///////////////////////// Defining a set of data structures //////////////////////

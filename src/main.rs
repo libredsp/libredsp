@@ -11,36 +11,36 @@ struct Args {
 
 #[derive(Subcommand, Debug)]
 enum Command {
-    /// Design a digital filter
+    // Design a digital filter
     FilterDesign {
-        /// Filter type: lowpass, highpass, bandpass, or bandstop
+        // Filter type: lowpass, highpass, bandpass, or bandstop
         #[arg(short = 't', long)]
         r#type: FilterType,
 
-        /// Filter design method: fir or iir
+        // Filter design method: fir or iir
         #[arg(short = 'm', long)]
         method: FilterMethod,
 
-        /// Cutoff frequency in Hz
+        // Cutoff frequency in Hz
         #[arg(short = 'c', long)]
         cutoff: f64,
 
-        /// Sampling frequency in Hz
+        // Sampling frequency in Hz
         #[arg(short = 's', long)]
         sample_rate: f64,
 
-        /// Filter order
+        // Filter order
         #[arg(short = 'n', long)]
         order: usize,
 
-        /// Output file
+        // Output file
         #[arg(short = 'o', long)]
         output: String,
     },
 
-    /// Remove background noise from an audio file
+    // Remove background noise from an audio file
     NoiseRemove {
-        /// Input WAV file
+        // Input WAV file
         input: String,
 
         /// Output WAV file

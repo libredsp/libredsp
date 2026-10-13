@@ -2,6 +2,7 @@ use wasm_bindgen::prelude::*;
 pub mod fft;
 pub mod filter_design;
 pub mod math;
+pub mod ml;
 pub mod noise_reduction;
 pub mod resample;
 pub mod signal;

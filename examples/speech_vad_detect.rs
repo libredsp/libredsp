@@ -1,5 +1,6 @@
+use libredsp::ml::LogisticRegression;
 use libredsp::speech::wav::read_wav_mono;
-use libredsp::speech::{LogisticRegression, VadConfig, detect_speech};
+use libredsp::speech::{VadConfig, detect_speech};
 use std::path::Path;
 
 fn main() {

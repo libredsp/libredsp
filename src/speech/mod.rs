@@ -9,9 +9,6 @@ pub fn frame_params(sample_rate: f64) -> (usize, usize) {
     (frame_length, frame_hop)
 }
 
-pub mod logistic_regression;
-pub use logistic_regression::{LogisticRegression, Metrics, TrainConfig};
-
 pub mod vad;
 pub use vad::{Segment, VadConfig, detect_speech, segments_from_probabilities};
 
