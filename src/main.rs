@@ -38,9 +38,9 @@ enum Command {
         output: String,
     },
 
-    // Remove background noise from an audio file
+    /// Remove background noise from an audio file
     NoiseRemove {
-        // Input WAV file
+        /// Input WAV file
         input: String,
 
         /// Output WAV file
