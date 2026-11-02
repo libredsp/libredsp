@@ -11,7 +11,7 @@ LibreDSP provides functionality for:
 5. Resampling (via Decimation and Interpolation)
 6. Speech Processing Algorithms, such as Background Noise Removal and Voice Activity Detection (VAD)
 
-See the [Features](##features) section for more information about the capabilities of this library.
+See the [Features](#features) section for more information about the capabilities of this library.
 
 The library has minimal dependencies and implements core DSP algorithms from scratch.
 
