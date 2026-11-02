@@ -1,10 +1,10 @@
 [package]
 name = "libredsp"
-version = "0.1.10"
+version = "0.2.0"
 edition = "2024"
 license = "Apache-2.0"
 description = "DSP library in Rust"
-repository = "https://github.com/libredsp/libredsp"
+repository = "https://github.com/libredsp/libredsp-rs"
 readme = "README.md"
 keywords = ["dsp", "filter", "signal-processing"]
 
