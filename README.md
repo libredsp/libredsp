@@ -24,7 +24,7 @@ An overview of the features of the library is as follows:
 - *IIR filters*: Analog-to-digital transformations (bilinear transform) and pole-zero placement
 
 ### Statistical Filter Design
-- *Wiener filter*: Computes the filter coefficients that minimize the mean square error (MSE) between a desired signal and the filter output, in one computation.
+- *Wiener filter*: Computes the filter coefficients that minimize the mean square error (MSE), an estimate of the expected value of the squared error between a desired signal and the filter output, in one computation.
 - *Least mean square (LMS)*: Iteratively estimates the same MSE-minimizing filter coefficients by using instantaneous samples instead of estimating expected values by averaging.
 
 ### Spectral Estimation
