@@ -25,7 +25,7 @@ An overview of the features of the library is as follows:
 
 ### Statistical Filter Design
 - *Wiener filter*: Computes the filter coefficients that minimize the mean square error (MSE), an estimate of the expected value of the squared error between a desired signal and the filter output, in one computation.
-- *Least mean square (LMS)*: Iteratively estimates the same MSE-minimizing filter coefficients by using instantaneous samples instead of estimating expected values by averaging.
+- *Least mean square (LMS)*: Iteratively estimates the coefficients that minimize the MSE using instantaneous samples instead of estimating expected values by averaging.
 
 ### Spectral Estimation
 Estimate the power spectral density (PSD) of your signal via:
@@ -43,7 +43,7 @@ Simply clone the repo and build it with cargo. Alternatively, run:
 cargo install libredsp
 ```
 
-to add the latest version of this library available on crates.io to your project.
+which adds the latest version of this library available on crates.io to your project.
 For the web build (WASM bindings) run:
 
 ```
@@ -57,7 +57,7 @@ To run a specific example:
 cargo run --example <EXAMPLE>
 ```
 
-Where `<EXAMPLE>` for instance is `filter_design`. Visit the `examples/` directory to see all avaiable examples.
+Where `<EXAMPLE>` for instance is `filter_design`. Visit the `examples/` directory to see all available examples.
 
 ## Usage
 
