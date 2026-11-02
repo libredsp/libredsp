@@ -13,7 +13,7 @@ LibreDSP provides functionality for:
 
 See the [Features](#features) section for more information about the capabilities of this library.
 
-The library has minimal dependencies and implements core DSP algorithms from scratch.
+The library has minimal dependencies and implements the core functionalities from scratch.
 
 ## Features
 An overview of the features of the library is as follows:
