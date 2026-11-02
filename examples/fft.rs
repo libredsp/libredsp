@@ -1,10 +1,11 @@
 use libredsp::signal::Signal;
 
 fn main() {
-    let signal = Signal::new(vec![1.0, 0.0, 0.0, 0.0]);
+    let mut signal = Signal::new(vec![1.0, 0.0, 0.0, 0.0]);
     println!("Signal: {:?}", signal.clone().to_vec());
-    
+
     // Apply FFT
-    let spectrum = signal.fft();
-    println!("Result of FFT: {:?}", spectrum);
+    signal.zero_pad(1000);
+    let dtft = signal.fft();
+    println!("The DTFT {:?}", dtft);
 }
