@@ -33,8 +33,8 @@ Estimate the power spectral density (PSD) of your signal via:
 - *Welch's Method*: Smoother, lower-variance spectrum using overlapping windows
 
 ### Speech Processing
-- Background Noise Removal: Background noise removal via Short-Time Fourier Transform (STFT).
-- Voice Activity Detection (VAD): Voice activity detection (VAD) based on logistic regression. This feature can detect speech and non-speech parts of an audio recording. Here, a non-speech part can be any type of sound, such as a car passing by or a honking sound, and is not necessarily silence.
+- *Background Noise Removal*: Background noise removal via Short-Time Fourier Transform (STFT).
+- *Voice Activity Detection (VAD)*: Voice activity detection (VAD) based on logistic regression. This feature can detect speech and non-speech parts of an audio recording. Here, a non-speech part can be any type of sound, such as a car passing by or a honking sound, and is not necessarily silence.
 
 ## Installation
 Simply clone the repo and build it with cargo. Alternatively, run:
