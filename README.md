@@ -1,14 +1,11 @@
 # LibreDSP Library
 
-![Rust](https://github.com/LibreDSP/LibreDSP/actions/workflows/rust.yml/badge.svg)
-
 A Digital Signal Processing (DSP) library written in Rust. The library also contains WebAssembly (WASM) bindings for web applications.
 
 LibreDSP provides functionality for Fast Fourier Transform (FFT), spectral estimation, frequency-selective FIR and IIR filter design, statistical filter design (such as Wiener filter and LMS), resampling (via decimation and interpolation), and speech processing algorithms such as background noise-removal via FFT and Voice Activity Detection (VAD).
 
 The library has minimal dependencies and implements core DSP algorithms from scratch.
 
-You may also be interested in [LibreDSP Workspace](https://libredsp.github.io), a web app that uses this library for DSP design and simulation.
 
 ## Features
 An overview of the features of the library is as follows:
