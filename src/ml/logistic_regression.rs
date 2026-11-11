@@ -15,8 +15,8 @@ pub struct TrainConfig {
 impl Default for TrainConfig {
     fn default() -> Self {
         TrainConfig {
-            learning_rate: 0.01,
-            epochs: 5000,
+            learning_rate: 0.5,
+            epochs: 3000,
         }
     }
 }
@@ -70,6 +70,10 @@ pub fn sigmoid(x: f64) -> f64 {
 #[derive(Debug, Clone, PartialEq)]
 pub struct LogisticRegression {
     pub weights: Vec<f64>,
+    /* Per feature mean and standard deviation of the training data. Inputs are
+     * standardized as (x - mean) / std before the weights are applied. */
+    pub mean: Vec<f64>,
+    pub std: Vec<f64>,
 }
 
 impl LogisticRegression {
@@ -79,7 +83,7 @@ impl LogisticRegression {
 
         let mut z = self.weights[0];
         for j in 0..x.len() {
-            z += self.weights[j + 1] * x[j];
+            z += self.weights[j + 1] * (x[j] - self.mean[j]) / self.std[j];
         }
         sigmoid(z)
     }
@@ -98,19 +102,36 @@ impl LogisticRegression {
         let n = x.len();
         let dim = x[0].len();
 
+        let mean: Vec<f64> = (0..dim)
+            .map(|j| x.iter().map(|r| r[j]).sum::<f64>() / n as f64)
+            .collect();
+        let std: Vec<f64> = (0..dim)
+            .map(|j| {
+                let v = x.iter().map(|r| (r[j] - mean[j]).powi(2)).sum::<f64>() / n as f64;
+                v.sqrt().max(1e-8)
+            })
+            .collect();
+        let xs: Vec<Vec<f64>> = x
+            .iter()
+            .map(|r| (0..dim).map(|j| (r[j] - mean[j]) / std[j]).collect())
+            .collect();
+
+        // Train on standardized data using an identity scaler
         let mut model = LogisticRegression {
             weights: vec![0.0; dim + 1],
+            mean: vec![0.0; dim],
+            std: vec![1.0; dim],
         };
 
         for _ in 0..config.epochs {
             let mut grad = vec![0.0; dim + 1];
 
             for i in 0..n {
-                let err = if y[i] { 1.0 } else { 0.0 } - model.predict_probability(&x[i]);
+                let err = if y[i] { 1.0 } else { 0.0 } - model.predict_probability(&xs[i]);
 
                 grad[0] += err; // x0 = 1
                 for j in 0..dim {
-                    grad[j + 1] += err * x[i][j];
+                    grad[j + 1] += err * xs[i][j];
                 }
             }
 
@@ -119,6 +140,8 @@ impl LogisticRegression {
             }
         }
 
+        model.mean = mean;
+        model.std = std;
         Ok(model)
     }
 
@@ -151,22 +174,44 @@ impl LogisticRegression {
         }
     }
 
-    // Convert weights to a one line of text
+    // Save weights, mean and std as three lines of text
     pub fn save(&self, path: &str) -> Result<(), Box<dyn Error>> {
-        let line: Vec<String> = self.weights.iter().map(|t| t.to_string()).collect();
-        fs::write(path, line.join(" ") + "\n")?;
+        let line = |v: &[f64]| {
+            v.iter()
+                .map(|t| t.to_string())
+                .collect::<Vec<_>>()
+                .join(" ")
+        };
+        fs::write(
+            path,
+            format!(
+                "{}\n{}\n{}\n",
+                line(&self.weights),
+                line(&self.mean),
+                line(&self.std)
+            ),
+        )?;
         Ok(())
     }
-    // Convert weights from a textual format to an actual weights (with vector type)
+
+    // Load a model. A legacy one line file loads with an identity scaler.
     pub fn load(path: &str) -> Result<Self, Box<dyn Error>> {
         let text = fs::read_to_string(path)?;
-        let weights: Vec<f64> = text
-            .split_whitespace()
-            .map(|v| v.parse())
-            .collect::<Result<_, _>>()?;
-        if weights.is_empty() {
-            return Err("model file is empty".into());
+        let mut lines = text.lines().filter(|l| !l.trim().is_empty());
+        let parse = |l: &str| -> Result<Vec<f64>, Box<dyn Error>> {
+            Ok(l.split_whitespace()
+                .map(|v| v.parse())
+                .collect::<Result<_, _>>()?)
+        };
+        let weights = parse(lines.next().ok_or("model file is empty")?)?;
+        let dim = weights.len() - 1;
+        let (mean, std) = match (lines.next(), lines.next()) {
+            (Some(m), Some(s)) => (parse(m)?, parse(s)?),
+            _ => (vec![0.0; dim], vec![1.0; dim]),
+        };
+        if mean.len() != dim || std.len() != dim {
+            return Err("mean/std length does not match weights".into());
         }
-        Ok(LogisticRegression { weights })
+        Ok(LogisticRegression { weights, mean, std })
     }
 }

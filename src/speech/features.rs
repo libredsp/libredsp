@@ -6,7 +6,7 @@ use crate::window::{WindowType, get_window};
  * The features extracted from audio files are:
  *      [log_energy, zcr, centroid, rolloff, flatness, energy_std, zcr_std]
  */
-pub const NUM_FEATURES: usize = 8;
+pub const NUM_FEATURES: usize = 7;
 const MOVING_STD_HALF_WIDTH: usize = 15; // Used in the 'moving_std' function to compute the moving standard deviation of a function
 const SPECTRAL_ROLLOFF_PERCENT: f64 = 0.85; // Used in the 'spectral_rolloff' to find the frequency at which SPECTRAL_ROLLOFF_PERCENT of the spectral power falls below that.
 
@@ -98,7 +98,7 @@ pub fn log_energy(signal: &Signal, sample_rate: f64) -> Vec<f64> {
             let rms = frame.rms();
             /* For a silent frame, the rms=0 so ln(0) would be undefined.
              * We add a small epsilon to obtain make ln valid (it would give us a very small value instead). */
-            (rms * rms + 1e-10).ln()
+            (rms * rms + 1e-10).ln().max(-14.0)
         })
         .collect()
 }
@@ -164,5 +164,6 @@ pub fn spectral_flatness(power: &[f64]) -> f64 {
     let n = power.len() as f64;
     let mean_log = power.iter().map(|p| (p + 1e-10).ln()).sum::<f64>() / n;
 
-    mean_log.exp() / (power.iter().sum::<f64>() / n)
+    let arith = power.iter().sum::<f64>() / n + 1e-10;
+    mean_log.exp() / arith
 }
