@@ -40,7 +40,7 @@ impl Default for VadConfig {
             threshold: 0.6,
             smoothing_frames: 11,
             min_speech: 0.5,
-            min_non_speech: 0.5,
+            min_non_speech: 1.0,
         }
     }
 }

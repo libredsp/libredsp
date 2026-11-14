@@ -90,6 +90,16 @@ impl Signal {
         &self.data
     }
 
+    pub fn push(&mut self, x: f64) {
+        self.data.push(x);
+    }
+
+    /* Removes the oldest n samples. */
+    pub fn drop_front(&mut self, n: usize) {
+        self.data.drain(..n);
+    }
+
+    /* One-sided x-cor */
     pub fn crosscorrelation(&self, other: &Signal, max_lag: usize) -> Vec<f64> {
         assert_eq!(self.len(), other.len());
 
@@ -108,6 +118,23 @@ impl Signal {
         }
 
         p
+    }
+
+    /* Two sided x-cor */
+    pub fn crosscorrelation_two_sided(&self, other: &Signal, max_lag: usize) -> Vec<f64> {
+        assert_eq!(self.len(), other.len());
+        let n = self.len();
+        let m = max_lag as isize;
+
+        (-m..=m)
+            .map(|lag| {
+                let sum: f64 = (0..n as isize)
+                    .filter(|&k| k - lag >= 0 && k - lag < n as isize)
+                    .map(|k| self[(k - lag) as usize] * other[k as usize])
+                    .sum();
+                sum / n as f64
+            })
+            .collect()
     }
 
     pub fn autocorrelation(&self, max_lag: usize) -> Vec<f64> {

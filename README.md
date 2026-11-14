@@ -10,6 +10,7 @@ LibreDSP provides functionality for:
 4. Statistical Filter Design (e.g., Wiener Filter and LMS)
 5. Resampling (via Decimation and Interpolation)
 6. Speech Processing Algorithms, such as Background Noise Removal and Voice Activity Detection (VAD)
+7. Direction-of-Arrival (DOA) estimation
 
 See the [Features](#features) section below for more information about the capabilities of this library.
 
@@ -35,6 +36,10 @@ Estimate the power spectral density (PSD) of your signal via:
 ### Speech Processing
 - *Background Noise Removal*: Background noise removal via Short-Time Fourier Transform (STFT).
 - *Voice Activity Detection (VAD)*: Voice activity detection (VAD) based on logistic regression. This feature can detect speech and non-speech parts of an audio recording. Here, a non-speech part can be any type of sound, such as a car passing by or a honking sound, and is not necessarily silence.
+
+### Direction-of-Arrival (DOA) Estimation
+- *DOA* estimates the angle at which data is received on a an array of sensors.
+- Currently, the library supports estimating DOA using the cross-correlation between the data received on two sensors.
 
 ## Installation
 Simply clone the repo and build it with cargo. Alternatively, run:

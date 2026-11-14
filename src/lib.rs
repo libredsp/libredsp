@@ -1,4 +1,5 @@
 use wasm_bindgen::prelude::*;
+pub mod doa;
 pub mod fft;
 pub mod filter_design;
 pub mod math;
