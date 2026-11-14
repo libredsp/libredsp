@@ -416,3 +416,118 @@ pub fn simulate_graph_wasm(json: &str) -> Result<JsValue, JsValue> {
     serde_wasm_bindgen::to_value(&named_recordings)
         .map_err(|e| JsValue::from_str(&format!("serialize error: {e}")))
 }
+
+/*
+ * DOA stuff
+ */
+use crate::doa::autocorrelation_based::{
+    DoaConfig, DoaEstimate, DoaEstimator, estimate_delay, estimate_doa,
+};
+use crate::signal::Signal;
+
+fn doa_config_from_args(
+    sample_rate: f64,
+    mic_distance: f64,
+    speed_of_sound: f64,
+    calibration_delay_samples: f64,
+) -> DoaConfig {
+    DoaConfig {
+        sample_rate,
+        mic_distance,
+        speed_of_sound,
+        calibration_delay_samples,
+        ..DoaConfig::default()
+    }
+}
+
+/* One-shot: raw delay (in samples) of `right` relative to `left` for one frame. */
+#[wasm_bindgen]
+pub fn doa_estimate_delay_wasm(
+    left: Vec<f64>,
+    right: Vec<f64>,
+    sample_rate: f64,
+    mic_distance: f64,
+    speed_of_sound: f64,
+    calibration_delay_samples: f64,
+) -> f64 {
+    assert!(left.len() == right.len());
+    let config = doa_config_from_args(
+        sample_rate,
+        mic_distance,
+        speed_of_sound,
+        calibration_delay_samples,
+    );
+    estimate_delay(&Signal::new(left), &Signal::new(right), &config)
+}
+
+/* One-shot: direction of arrival, in degrees, for one frame. */
+#[wasm_bindgen]
+pub fn doa_estimate_wasm(
+    left: Vec<f64>,
+    right: Vec<f64>,
+    sample_rate: f64,
+    mic_distance: f64,
+    speed_of_sound: f64,
+    calibration_delay_samples: f64,
+) -> f64 {
+    assert!(left.len() == right.len());
+    let config = doa_config_from_args(
+        sample_rate,
+        mic_distance,
+        speed_of_sound,
+        calibration_delay_samples,
+    );
+    estimate_doa(&Signal::new(left), &Signal::new(right), &config)
+}
+
+/* Estimates are returned flattened as [angle_0, dbfs_0, angle_1, dbfs_1, ...] to make
+ * WASM happy. The angle is NaN when the frame was below the activation threshold. */
+fn flatten_doa_estimates(estimates: Vec<DoaEstimate>) -> Vec<f64> {
+    estimates
+        .into_iter()
+        .flat_map(|e| [e.angle_degrees.unwrap_or(f64::NAN), e.dbfs])
+        .collect()
+}
+
+/* Streaming estimator. It keeps its own buffer, so JS can push audio in chunks of any size. */
+#[wasm_bindgen(js_name = DoaEstimator)]
+pub struct DoaEstimatorWasm {
+    inner: DoaEstimator,
+}
+
+#[wasm_bindgen(js_class = DoaEstimator)]
+impl DoaEstimatorWasm {
+    #[wasm_bindgen(constructor)]
+    pub fn new(
+        sample_rate: f64,
+        mic_distance: f64,
+        speed_of_sound: f64,
+        frame_size: usize,
+        hop_size: usize,
+        activation_threshold_dbfs: f64,
+        calibration_delay_samples: f64,
+    ) -> DoaEstimatorWasm {
+        let config = DoaConfig {
+            sample_rate,
+            mic_distance,
+            speed_of_sound,
+            frame_size,
+            hop_size,
+            activation_threshold_dbfs,
+            calibration_delay_samples,
+        };
+        DoaEstimatorWasm {
+            inner: DoaEstimator::new(config),
+        }
+    }
+
+    /* Separate channels (Float64Array each). */
+    pub fn push(&mut self, left: Vec<f64>, right: Vec<f64>) -> Vec<f64> {
+        flatten_doa_estimates(self.inner.push(&left, &right))
+    }
+
+    /* Interleaved stereo [L0, R0, L1, R1, ...] (Int16Array), as read from the device. */
+    pub fn push_interleaved_i16(&mut self, samples: Vec<i16>) -> Vec<f64> {
+        flatten_doa_estimates(self.inner.push_interleaved_i16(&samples))
+    }
+}

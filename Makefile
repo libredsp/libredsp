@@ -2,7 +2,7 @@
 build:
 	cargo build
 
-build_web:
+wasm:
 	wasm-pack build --target web
 
 run:
