@@ -10,7 +10,7 @@ LibreDSP provides functionality for:
 4. Statistical Filter Design (e.g., Wiener Filter and LMS)
 5. Resampling (via Decimation and Interpolation)
 6. Speech Processing Algorithms, such as Background Noise Removal and Voice Activity Detection (VAD)
-7. Direction-of-Arrival (DOA) estimation
+7. Direction-of-Arrival (DOA) Estimation
 
 See the [Features](#features) section below for more information about the capabilities of this library.
 
